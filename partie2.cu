@@ -46,6 +46,38 @@ void conv2D(float *input, float *output, float *kernel, int width, int height, i
     }
 }
 
+void subSample(float *input, float *output, int width, int height) {
+    int depth = C1_DEPTH;
+    int newWidth = width / 2;
+    int newHeight = height / 2;
+    for (int d = 0; d < depth; d++) {
+        for (int x = 0; x < newWidth; x++) {
+            for (int y = 0; y < newHeight; y++) {
+                float sum = 0.0;
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < 2; j++) {
+                        sum += input[d * width * height + (2 * x + i) * height + 2 * y + j];
+                    }
+                }
+                output[d * newWidth * newHeight + x * newHeight + y] = sum / 4.0;
+            }
+        }
+    }
+}
+
+void MatrixPrint(float* matrix, int width, int height) {
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            printf("%f ", matrix[i * height + j]);
+        }
+        printf("\n");
+    }
+}
+
+__device__ float activation_tanh(float M) {
+    return tanh(M);
+}
+
 
 initRandomMatrix(raw_data, WIDTH * HEIGHT);
 initMatrix(C1_data, C1_DEPTH * C1_WIDTH * C1_HEIGHT, 0);
@@ -54,6 +86,10 @@ initRandomMatrix(C1_kernel, C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE);
 
 
 
-
-
 conv2D(raw_data, C1_data, C1_kernel, WIDTH, HEIGHT, KERNEL_SIZE);
+
+subSample(C1_data, S1_data, C1_WIDTH, C1_HEIGHT);
+
+
+
+MatrixPrint(C1_data, C1_WIDTH, C1_HEIGHT);
