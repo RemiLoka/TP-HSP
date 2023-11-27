@@ -88,6 +88,8 @@ int main() {
     initMatrix(C1_kernel, C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE);
 
     conv2D(raw_data, C1_data, C1_kernel, WIDTH, HEIGHT, KERNEL_SIZE);
+    //activation_tanh(C1_data);
+
     subSample(C1_data, S1_data, C1_WIDTH, C1_HEIGHT);
 
     MatrixPrint(C1_data, C1_WIDTH, C1_HEIGHT);
