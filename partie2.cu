@@ -79,17 +79,18 @@ __device__ float activation_tanh(float M) {
 }
 
 
-initRandomMatrix(raw_data, WIDTH * HEIGHT);
-initMatrix(C1_data, C1_DEPTH * C1_WIDTH * C1_HEIGHT, 0);
-initMatrix(S1_data, C1_DEPTH * S1_WIDTH * S1_HEIGHT, 0);
-initRandomMatrix(C1_kernel, C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE);
+int main() {
+    srand(time(NULL));
 
+    initMatrix(raw_data, WIDTH * HEIGHT);
+    zeroMatrix(C1_data, C1_DEPTH * C1_WIDTH * C1_HEIGHT);
+    zeroMatrix(S1_data, C1_DEPTH * S1_WIDTH * S1_HEIGHT);
+    initMatrix(C1_kernel, C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE);
 
+    conv2D(raw_data, C1_data, C1_kernel, WIDTH, HEIGHT, KERNEL_SIZE);
+    subSample(C1_data, S1_data, C1_WIDTH, C1_HEIGHT);
 
-conv2D(raw_data, C1_data, C1_kernel, WIDTH, HEIGHT, KERNEL_SIZE);
+    MatrixPrint(C1_data, C1_WIDTH, C1_HEIGHT);
 
-subSample(C1_data, S1_data, C1_WIDTH, C1_HEIGHT);
-
-
-
-MatrixPrint(C1_data, C1_WIDTH, C1_HEIGHT);
+    return 0;
+}
