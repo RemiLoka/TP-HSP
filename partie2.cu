@@ -29,6 +29,23 @@ void zeroMatrix(float *matrix, int size) {
     }
 }
 
+void conv2D(float *input, float *output, float *kernel, int width, int height, int kernelSize) {
+    int depth = C1_DEPTH;
+    for (int d = 0; d < depth; d++) {
+        for (int x = 0; x < width - kernelSize + 1; x++) {
+            for (int y = 0; y < height - kernelSize + 1; y++) {
+                float sum = 0.0;
+                for (int i = 0; i < kernelSize; i++) {
+                    for (int j = 0; j < kernelSize; j++) {
+                        sum += input[(x + i) * height + (y + j)] * kernel[d * kernelSize * kernelSize + i * kernelSize + j];
+                    }
+                }
+                output[d * (width - kernelSize + 1) * (height - kernelSize + 1) + x * (height - kernelSize + 1) + y] = sum;
+            }
+        }
+    }
+}
+
 
 initRandomMatrix(raw_data, WIDTH * HEIGHT);
 initMatrix(C1_data, C1_DEPTH * C1_WIDTH * C1_HEIGHT, 0);
@@ -37,3 +54,6 @@ initRandomMatrix(C1_kernel, C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE);
 
 
 
+
+
+conv2D(raw_data, C1_data, C1_kernel, WIDTH, HEIGHT, KERNEL_SIZE);
