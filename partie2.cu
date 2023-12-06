@@ -74,10 +74,11 @@ void MatrixPrint(float* matrix, int width, int height) {
     }
 }
 
-__device__ float activation_tanh(float M) {
-    return tanh(M);
+void apply_activation_tanh(float *matrix, int size) {
+    for (int i = 0; i < size; i++) {
+        matrix[i] = tanh(matrix[i]);
+    }
 }
-
 
 int main() {
     srand(time(NULL));
@@ -87,12 +88,17 @@ int main() {
     zeroMatrix(S1_data, C1_DEPTH * S1_WIDTH * S1_HEIGHT);
     initMatrix(C1_kernel, C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE);
 
-    conv2D(raw_data, C1_data, C1_kernel, WIDTH, HEIGHT, KERNEL_SIZE);
-    //activation_tanh(C1_data);
+     conv2D(raw_data, C1_data, C1_kernel, WIDTH, HEIGHT, KERNEL_SIZE);
 
+    apply_activation_tanh(C1_data, C1_DEPTH * C1_WIDTH * C1_HEIGHT);
+
+    
     subSample(C1_data, S1_data, C1_WIDTH, C1_HEIGHT);
 
+    printf("C1_data après convolution et activation:\n");
     MatrixPrint(C1_data, C1_WIDTH, C1_HEIGHT);
+    printf("\nS1_data après sous-échantillonnage:\n");
+    MatrixPrint(S1_data, S1_WIDTH, S1_HEIGHT);
 
     return 0;
 }
