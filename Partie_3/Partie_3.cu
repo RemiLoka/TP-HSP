@@ -65,6 +65,31 @@ void subSample(float *input, float *output, int width, int height) {
     }
 }
 
+
+void fullyConnectedLayer(float *input, float *output, float *weights, int inputSize, int outputSize) {
+    for (int i = 0; i < outputSize; i++) {
+        output[i] = 0.0;
+        for (int j = 0; j < inputSize; j++) {
+            output[i] += input[j] * weights[i * inputSize + j];
+        }
+    }
+}
+
+void softmaxActivation(float *input, int size) {
+    float sum = 0.0;
+    for (int i = 0; i < size; i++) {
+        input[i] = exp(input[i]);
+        sum += input[i];
+    }
+    for (int i = 0; i < size; i++) {
+        input[i] /= sum;
+    }
+}
+
+
+
+
+
 void MatrixPrint(float* matrix, int width, int height) {
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
@@ -99,6 +124,31 @@ int main() {
     MatrixPrint(C1_data, C1_WIDTH, C1_HEIGHT);
     printf("\nS1_data après sous-échantillonnage:\n");
     MatrixPrint(S1_data, S1_WIDTH, S1_HEIGHT);
+
+
+    conv2D(S1_data, C3_data, C3_kernel, S1_WIDTH, S1_HEIGHT, KERNEL_SIZE);
+    apply_activation_tanh(C3_data, C3_DEPTH * C3_WIDTH * C3_HEIGHT);
+    subSample(C3_data, S3_data, C3_WIDTH, C3_HEIGHT);
+
+    for (int i = 0; i < FLATTEN_SIZE; i++) {
+        flatten_data[i] = S3_data[i];
+    }
+
+    initMatrix(C5_weights, FLATTEN_SIZE * C5_SIZE);
+    fullyConnectedLayer(flatten_data, C5_data, C5_weights, FLATTEN_SIZE, C5_SIZE);
+    apply_activation_tanh(C5_data, C5_SIZE);
+
+    initMatrix(F6_weights, C5_SIZE * F6_SIZE);
+    fullyConnectedLayer(C5_data, F6_data, F6_weights, C5_SIZE, F6_SIZE);
+    apply_activation_tanh(F6_data, F6_SIZE);
+
+    initMatrix(output_weights, F6_SIZE * OUTPUT_SIZE);
+    fullyConnectedLayer(F6_data, output_data, output_weights, F6_SIZE, OUTPUT_SIZE);
+    softmaxActivation(output_data, OUTPUT_SIZE);
+
+    printf("\nOutput layer data:\n");
+    MatrixPrint(output_data, 1, OUTPUT_SIZE);
+
 
     return 0;
 }
