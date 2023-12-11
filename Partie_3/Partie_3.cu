@@ -20,6 +20,8 @@
 #define F6_SIZE 84
 #define OUTPUT_SIZE 10
 
+#define NUM_IMAGES 60000
+
 
 
 float raw_data[WIDTH * HEIGHT];
@@ -39,7 +41,7 @@ float F6_data[F6_SIZE];
 float output_weights[F6_SIZE * OUTPUT_SIZE];
 float output_data[OUTPUT_SIZE];
 
-
+float images[NUM_IMAGES][WIDTH * HEIGHT];
 
 
 void initMatrix(float *matrix, int size) {
@@ -130,15 +132,55 @@ void apply_activation_tanh(float *matrix, int size) {
     }
 }
 
+
+void readMNIST(char* filename) {
+    FILE *fptr;
+    unsigned int magic, nbImg, nbRows, nbCols;
+    unsigned char pixel;
+
+    if ((fptr = fopen(filename, "rb")) == NULL) {
+        printf("Can't open file\n");
+        exit(1);
+    }
+
+    // Lecture de l'entête du fichier
+    fread(&magic, sizeof(int), 1, fptr);
+    fread(&nbImg, sizeof(int), 1, fptr);
+    fread(&nbRows, sizeof(int), 1, fptr);
+    fread(&nbCols, sizeof(int), 1, fptr);
+
+    // Lecture des images
+    for (int img = 0; img < NUM_IMAGES; img++) {
+        for (int i = 0; i < HEIGHT; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                fread(&pixel, sizeof(unsigned char), 1, fptr);
+                images[img][i * WIDTH + j] = pixel / 255.0f;
+            }
+        }
+    }
+
+    fclose(fptr);
+}
+
+
+
+
+
 int main() {
     srand(time(NULL));
+
+    readMNIST("train-images.idx3-ubyte");
 
     initMatrix(raw_data, WIDTH * HEIGHT);
     zeroMatrix(C1_data, C1_DEPTH * C1_WIDTH * C1_HEIGHT);
     zeroMatrix(S1_data, C1_DEPTH * S1_WIDTH * S1_HEIGHT);
     initMatrix(C1_kernel, C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE);
 
-     conv2D(raw_data, C1_data, C1_kernel, WIDTH, HEIGHT, KERNEL_SIZE);
+    int img_index = 0; 
+    float* raw_data = images[img_index];
+
+
+    conv2D(raw_data, C1_data, C1_kernel, WIDTH, HEIGHT, KERNEL_SIZE);
 
     apply_activation_tanh(C1_data, C1_DEPTH * C1_WIDTH * C1_HEIGHT);
 
