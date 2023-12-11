@@ -10,11 +10,36 @@
 #define C1_HEIGHT 28
 #define S1_WIDTH 14
 #define S1_HEIGHT 14
+#define C3_DEPTH 16
+#define C3_WIDTH 10
+#define C3_HEIGHT 10
+#define S3_WIDTH 5
+#define S3_HEIGHT 5
+#define FLATTEN_SIZE (C3_DEPTH * S3_WIDTH * S3_HEIGHT)
+#define C5_SIZE 120
+#define F6_SIZE 84
+#define OUTPUT_SIZE 10
+
+
 
 float raw_data[WIDTH * HEIGHT];
 float C1_data[C1_DEPTH * C1_WIDTH * C1_HEIGHT];
 float S1_data[C1_DEPTH * S1_WIDTH * S1_HEIGHT];
 float C1_kernel[C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE];
+
+
+float C3_data[C3_DEPTH * C3_WIDTH * C3_HEIGHT];
+float S3_data[C3_DEPTH * S3_WIDTH * S3_HEIGHT];
+float C3_kernel[C3_DEPTH * C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE];
+float flatten_data[FLATTEN_SIZE];
+float C5_weights[FLATTEN_SIZE * C5_SIZE];
+float C5_data[C5_SIZE];
+float F6_weights[C5_SIZE * F6_SIZE];
+float F6_data[F6_SIZE];
+float output_weights[F6_SIZE * OUTPUT_SIZE];
+float output_data[OUTPUT_SIZE];
+
+
 
 
 void initMatrix(float *matrix, int size) {
