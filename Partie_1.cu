@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
 
 
     cudaMemcpy(h_Mout, d_Mout, size, cudaMemcpyDeviceToHost);
-    //MatrixPrint(h_Mout, n, p);
+    MatrixPrint(h_Mout, n, p);
 
     
     free(h_M1);
