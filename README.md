@@ -12,11 +12,11 @@ Sur ce GitHub, il n'y a pas les fichier compilé, uniquement ceux en .cu. Il est
 
 Pour compiler:
 
-''' nvcc fichier.cu -o fichier_cuda '''
+` nvcc fichier.cu -o fichier_cuda `
 
 Pour executer:
 
-''' ./fichier_cuda ''' et avec timing ''' time ./fichier_cuda '''
+` ./fichier_cuda ` et avec timing ` time ./fichier_cuda `
 
 ## Partie 1 - Prise en main de Cuda : Multiplication de matrices
 
