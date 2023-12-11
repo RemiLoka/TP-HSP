@@ -34,19 +34,19 @@ On a testé pour deux tailles de matrices différentes:
 
 - Pour une matrice de taille 100x100:
 
-Temps CPU addition: 61.0 µs
-Temps GPU addition: 30.3 µs
+  - Temps CPU addition: 61.0 µs
+  - Temps GPU addition: 30.3 µs
 
-Temps CPU mutilplication: 4.4 ms
-Temps GPU multiplication: 33.7 µs
+  - Temps CPU mutilplication: 4.4 ms
+  - Temps GPU multiplication: 33.7 µs
 
 - Pour une matrice de taille 1000x1000:
 
-Temps CPU addition: 5.3 ms
-Temps GPU addition: 71.5 µs
+  - Temps CPU addition: 5.3 ms
+  - Temps GPU addition: 71.5 µs
 
-Temps CPU mutilplication: 7.3 s
-Temps GPU multiplication: 17.6 ms
+  - Temps CPU mutilplication: 7.3 s
+  - Temps GPU multiplication: 17.6 ms
 
 ### Comparaison des résultats
 
