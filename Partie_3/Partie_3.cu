@@ -114,9 +114,6 @@ void softmaxActivation(float *input, int size) {
 }
 
 
-
-
-
 void MatrixPrint(float* matrix, int width, int height) {
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
@@ -171,7 +168,7 @@ int main() {
 
     readMNIST("train-images.idx3-ubyte");
 
-    initMatrix(raw_data, WIDTH * HEIGHT);
+    //initMatrix(raw_data, WIDTH * HEIGHT);
     zeroMatrix(C1_data, C1_DEPTH * C1_WIDTH * C1_HEIGHT);
     zeroMatrix(S1_data, C1_DEPTH * S1_WIDTH * S1_HEIGHT);
     initMatrix(C1_kernel, C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE);
