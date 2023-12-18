@@ -42,6 +42,7 @@ float F6_weights[C5_SIZE * F6_SIZE];
 float F6_data[F6_SIZE];
 float output_weights[F6_SIZE * OUTPUT_SIZE];
 float output_data[OUTPUT_SIZE];
+float *d_raw_data;
 
 
 float images[NUM_IMAGES][WIDTH * HEIGHT];
@@ -190,6 +191,9 @@ int main() {
     float *d_C5_weights, *d_C5_data, *d_F6_weights, *d_F6_data, *d_output_weights, *d_output_data;
 
 
+
+    cudaMalloc(&d_raw_data, WIDTH * HEIGHT * sizeof(float));
+
     cudaMalloc(&d_C1_kernel, C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE * sizeof(float));
     cudaMalloc(&d_C1_data, C1_DEPTH * C1_WIDTH * C1_HEIGHT * sizeof(float));
     cudaMalloc(&d_C3_kernel, C3_DEPTH * C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE * sizeof(float));
@@ -206,6 +210,7 @@ int main() {
 
 
     // Initialisation des poids et des données
+    cudaMemcpy(d_raw_data, images[0], WIDTH * HEIGHT * sizeof(float), cudaMemcpyHostToDevice);
     initMatrix(C1_kernel, C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE);
     cudaMemcpy(d_C1_kernel, C1_kernel, C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE * sizeof(float), cudaMemcpyHostToDevice);
     initMatrix(C3_kernel, C3_DEPTH * C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE);
@@ -255,6 +260,9 @@ int main() {
     fullyConnectedLayer<<<numBlocks, threadsPerBlock>>>(d_F6_data, d_output_data, d_output_weights, F6_SIZE, OUTPUT_SIZE);
 
     // Libération de la mémoire GPU pour les autres tableaux
+    cudaFree(d_raw_data);
+    cudaFree(d_C1_kernel);
+    cudaFree(d_C1_data);
     cudaFree(d_C3_kernel);
     cudaFree(d_C3_data);
     cudaFree(d_S3_data);
