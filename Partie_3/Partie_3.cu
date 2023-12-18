@@ -56,51 +56,56 @@ void zeroMatrix(float *matrix, int size) {
     }
 }
 
-void conv2D(float *input, float *output, float *kernel, int width, int height, int kernelSize) {
-    int depth = C1_DEPTH;
-    for (int d = 0; d < depth; d++) {
-        for (int x = 0; x < width - kernelSize + 1; x++) {
-            for (int y = 0; y < height - kernelSize + 1; y++) {
-                float sum = 0.0;
-                for (int i = 0; i < kernelSize; i++) {
-                    for (int j = 0; j < kernelSize; j++) {
-                        sum += input[(x + i) * height + (y + j)] * kernel[d * kernelSize * kernelSize + i * kernelSize + j];
-                    }
+__global__ void conv2D(float *input, float *output, float *kernel, int width, int height, int kernelSize, int depth) {
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    if (x < width - kernelSize + 1 && y < height - kernelSize + 1) {
+        for (int d = 0; d < depth; d++) {
+            float sum = 0.0;
+            for (int i = 0; i < kernelSize; i++) {
+                for (int j = 0; j < kernelSize; j++) {
+                    sum += input[(x + i) * height + (y + j)] * kernel[d * kernelSize * kernelSize + i * kernelSize + j];
                 }
-                output[d * (width - kernelSize + 1) * (height - kernelSize + 1) + x * (height - kernelSize + 1) + y] = sum;
             }
+            output[d * (width - kernelSize + 1) * (height - kernelSize + 1) + x * (height - kernelSize + 1) + y] = sum;
         }
     }
 }
 
-void subSample(float *input, float *output, int width, int height) {
-    int depth = C1_DEPTH;
+__global__ void subSample(float *input, float *output, int width, int height, int depth) {
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
     int newWidth = width / 2;
     int newHeight = height / 2;
-    for (int d = 0; d < depth; d++) {
-        for (int x = 0; x < newWidth; x++) {
-            for (int y = 0; y < newHeight; y++) {
-                float sum = 0.0;
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        sum += input[d * width * height + (2 * x + i) * height + 2 * y + j];
-                    }
+
+    if (x < newWidth && y < newHeight) {
+        for (int d = 0; d < depth; d++) {
+            float sum = 0.0;
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < 2; j++) {
+                    sum += input[d * width * height + (2 * x + i) * height + 2 * y + j];
                 }
-                output[d * newWidth * newHeight + x * newHeight + y] = sum / 4.0;
             }
+            output[d * newWidth * newHeight + x * newHeight + y] = sum / 4.0;
         }
     }
 }
 
 
-void fullyConnectedLayer(float *input, float *output, float *weights, int inputSize, int outputSize) {
-    for (int i = 0; i < outputSize; i++) {
-        output[i] = 0.0;
+
+__global__ void fullyConnectedLayer(float *input, float *output, float *weights, int inputSize, int outputSize) {
+    int index = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (index < outputSize) {
+        float sum = 0.0;
         for (int j = 0; j < inputSize; j++) {
-            output[i] += input[j] * weights[i * inputSize + j];
+            sum += input[j] * weights[index * inputSize + j];
         }
+        output[index] = sum;
     }
 }
+
 
 void softmaxActivation(float *input, int size) {
     float sum = 0.0;
