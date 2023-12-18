@@ -59,27 +59,33 @@ Pour tester les Layers de cette partie, nous avons créer une fonction de test.
 Pour se faire nous avons testé avec différentes matrices. Celles présentes dans le fichier test.cu sont les suivantes:
 
 Matrice d'entrée:
-$$ \begin{bmatrix}
+$$
+ \begin{bmatrix}
   0 & 0 & 0 & 0 & 0 \\
   0.5 & 0 & 0 & 0 & 0 \\
   0 & 0 & 0 & 0 & 0 \\
   0 & 0 & 0 & 0 & 0 \\
   0 & 0 & 0 & 0 & 0 \\
-\end{bmatrix} $$
+\end{bmatrix}
+$$
 
 Matrice du Kernel:
-$$ \begin{bmatrix}
+$$ 
+\begin{bmatrix}
   1 & 1 & 1 \\
   1 & 1 & 1 \\
   1 & 1 & 1 \\
-\end{bmatrix} $$
+\end{bmatrix} 
+$$
 
 Nous obtenons en sortie la matrice suivante:
-$$ \begin{bmatrix}
+$$ 
+\begin{bmatrix}
   0.5 & 0 & 0 \\
   0.5 & 0 & 0 \\
   0 & 0 & 0 \\
-\end{bmatrix} $$
+\end{bmatrix} 
+$$
 
 Nous constatons bien avec cet exemple que la convolution fonctionne correctement.
 
