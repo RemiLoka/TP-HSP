@@ -56,13 +56,32 @@ Lors des calculs sur des matrices de petites tailles, l'utilisation du GPU n'est
 
 Pour tester les Layers de cette partie, nous avons créer une fonction de test.
 
-$$\[
-\begin{bmatrix}
-  a_{11} & a_{12} & a_{13} \\
-  a_{21} & a_{22} & a_{23} \\
-  a_{31} & a_{32} & a_{33} \\
-\end{bmatrix}
-\]$$
+Pour se faire nous avons testé avec différentes matrices. Celles présentes dans le fichier test.cu sont les suivantes:
+
+Matrice d'entrée:
+$$ \begin{bmatrix}
+  0 & 0 & 0 & 0 & 0 \\
+  0.5 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 \\
+\end{bmatrix} $$
+
+Matrice du Kernel:
+$$ \begin{bmatrix}
+  1 & 1 & 1 \\
+  1 & 1 & 1 \\
+  1 & 1 & 1 \\
+\end{bmatrix} $$
+
+Nous obtenons en sortie la matrice suivante:
+$$ \begin{bmatrix}
+  0.5 & 0 & 0 \\
+  0.5 & 0 & 0 \\
+  0 & 0 & 0 \\
+\end{bmatrix} $$
+
+Nous constatons bien avec cet exemple que la convolution fonctionne correctement.
 
 ### Layer 1 - Génération des données de test
 
