@@ -39,43 +39,37 @@ void printMatrix(float *matrix, int width, int height) {
 
 
 int main() {
-    // Define input matrix and kernel
     float h_input[WIDTH * HEIGHT] = {0};
     h_input[5] = 0.5; // Middle element set to 1
     float h_kernel[KERNEL_SIZE * KERNEL_SIZE] = {1, 1, 1, 1, 1, 1, 1, 1, 1}; // Simple 3x3 kernel
     float h_output[C1_DEPTH * C1_WIDTH * C1_HEIGHT] = {0};
 
-    // Allocate memory on GPU
     float *d_input, *d_kernel, *d_output;
     cudaMalloc(&d_input, sizeof(h_input));
     cudaMalloc(&d_kernel, sizeof(h_kernel));
     cudaMalloc(&d_output, sizeof(h_output));
     
-    // Copy data to GPU
     cudaMemcpy(d_input, h_input, sizeof(h_input), cudaMemcpyHostToDevice);
     cudaMemcpy(d_kernel, h_kernel, sizeof(h_kernel), cudaMemcpyHostToDevice);
 
-    // Run the kernel
     dim3 blockDims(16, 16);
     dim3 gridDims((C1_WIDTH + blockDims.x - 1) / blockDims.x, (C1_HEIGHT + blockDims.y - 1) / blockDims.y);
     conv2D_kernel<<<gridDims, blockDims>>>(d_input, d_output, d_kernel, WIDTH, HEIGHT, KERNEL_SIZE, C1_DEPTH);
 
-    // Copy result back to CPU
     cudaMemcpy(h_output, d_output, sizeof(h_output), cudaMemcpyDeviceToHost);
 
-    // Print the input matrix
+    // input matrix
     printf("Input Matrix:\n");
     printMatrix(h_input, WIDTH, HEIGHT);
 
-    // Print the kernel
+    // kernel
     printf("Kernel Matrix:\n");
     printMatrix(h_kernel, KERNEL_SIZE, KERNEL_SIZE);
 
-    // Print the output matrix
+    // output matrix
     printf("Output Matrix:\n");
     printMatrix(h_output, C1_WIDTH, C1_HEIGHT);
 
-    // Free GPU memory
     cudaFree(d_input);
     cudaFree(d_kernel);
     cudaFree(d_output);

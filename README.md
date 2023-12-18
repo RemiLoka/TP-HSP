@@ -54,6 +54,16 @@ Lors des calculs sur des matrices de petites tailles, l'utilisation du GPU n'est
 
 ## Partie 2 - Premières couches du réseau de neurone LeNet-5 : Convolution 2D et subsampling
 
+Pour tester les Layers de cette partie, nous avons créer une fonction de test.
+
+$$\[
+\begin{bmatrix}
+  a_{11} & a_{12} & a_{13} \\
+  a_{21} & a_{22} & a_{23} \\
+  a_{31} & a_{32} & a_{33} \\
+\end{bmatrix}
+\]$$
+
 ### Layer 1 - Génération des données de test
 
 ### Layer 2 - Layer 2 - Convolution 2D
