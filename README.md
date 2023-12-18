@@ -63,7 +63,7 @@ Matrice d'entrée:
 $$
  \begin{bmatrix}
   0 & 0 & 0 & 0 & 0 \\
-  0.5 & 0 & 0 & 0 & 0 \\
+  20 & 0 & 0 & 0 & 0 \\
   0 & 0 & 0 & 0 & 0 \\
   0 & 0 & 0 & 0 & 0 \\
   0 & 0 & 0 & 0 & 0 \\
@@ -80,25 +80,27 @@ $$
 \end{bmatrix} 
 $$
 
-Nous obtenons en sortie la matrice suivante:
+Nous obtenons en sortie la matrice suivante (après convolution):
 
 $$ 
 \begin{bmatrix}
-  0.5 & 0 & 0 \\
-  0.5 & 0 & 0 \\
+  20 & 0 & 0 \\
+  20 & 0 & 0 \\
   0 & 0 & 0 \\
 \end{bmatrix} 
 $$
 
-Nous constatons bien avec cet exemple que la convolution fonctionne correctement.
+Et après la fonction d'activation:
 
-### Layer 1 - Génération des données de test
+$$ 
+\begin{bmatrix}
+  1 & 0 & 0 \\
+  1 & 0 & 0 \\
+  0 & 0 & 0 \\
+\end{bmatrix} 
+$$
 
-### Layer 2 - Layer 2 - Convolution 2D
-
-### Layer 3 - Sous-échantillonnage
-
-### Tests
+Nous voyons donc que toutes les étapes de cette partie sont correctement implémentée.
 
 ### Fonctions d'activation
 
