@@ -19,6 +19,8 @@ float S1_data[C1_DEPTH * S1_WIDTH * S1_HEIGHT];
 float C1_kernel[C1_DEPTH * KERNEL_SIZE * KERNEL_SIZE];
 
 
+
+
 __global__ void initMatrix_kernel(float *matrix, int size, bool isZero, unsigned long long seed) {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     curandState state;
@@ -84,6 +86,7 @@ __global__ void apply_activation_tanh_kernel(float *matrix, int size) {
 
 
 int main() {
+
     // Allocate memory on GPU
     float *d_raw_data, *d_C1_data, *d_S1_data, *d_C1_kernel;
     cudaMalloc(&d_raw_data, WIDTH * HEIGHT * sizeof(float));
@@ -137,8 +140,3 @@ int main() {
 
     return 0;
 }
-
-
-
-
-

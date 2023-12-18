@@ -37,11 +37,18 @@ void printMatrix(float *matrix, int width, int height) {
     printf("\n");
 }
 
+__global__ void apply_activation(float *matrix, int size) {
+    int index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index < size) {
+        matrix[index] = tanh(matrix[index]);
+    }
+}
+
 
 int main() {
     // Define input matrix and kernel
     float h_input[WIDTH * HEIGHT] = {0};
-    h_input[5] = 0.5; // Middle element set to 1
+    h_input[5] = 20; // Middle element set to 1
     float h_kernel[KERNEL_SIZE * KERNEL_SIZE] = {1, 1, 1, 1, 1, 1, 1, 1, 1}; // Simple 3x3 kernel
     float h_output[C1_DEPTH * C1_WIDTH * C1_HEIGHT] = {0};
 
@@ -51,6 +58,7 @@ int main() {
     cudaMalloc(&d_kernel, sizeof(h_kernel));
     cudaMalloc(&d_output, sizeof(h_output));
     
+    
     // Copy data to GPU
     cudaMemcpy(d_input, h_input, sizeof(h_input), cudaMemcpyHostToDevice);
     cudaMemcpy(d_kernel, h_kernel, sizeof(h_kernel), cudaMemcpyHostToDevice);
@@ -59,6 +67,8 @@ int main() {
     dim3 blockDims(16, 16);
     dim3 gridDims((C1_WIDTH + blockDims.x - 1) / blockDims.x, (C1_HEIGHT + blockDims.y - 1) / blockDims.y);
     conv2D_kernel<<<gridDims, blockDims>>>(d_input, d_output, d_kernel, WIDTH, HEIGHT, KERNEL_SIZE, C1_DEPTH);
+
+
 
     // Copy result back to CPU
     cudaMemcpy(h_output, d_output, sizeof(h_output), cudaMemcpyDeviceToHost);
@@ -71,8 +81,19 @@ int main() {
     printf("Kernel Matrix:\n");
     printMatrix(h_kernel, KERNEL_SIZE, KERNEL_SIZE);
 
-    // Print the output matrix
-    printf("Output Matrix:\n");
+    // Print the output matrix before applying the activation
+    printf("Output Matrix (Before Activation):\n");
+    printMatrix(h_output, C1_WIDTH, C1_HEIGHT);
+
+    // Apply activation function to the output matrix
+    int outputSize = C1_DEPTH * C1_WIDTH * C1_HEIGHT;
+    apply_activation<<<(outputSize + 255) / 256, 256>>>(d_output, outputSize);
+
+    // Copy the activated result back to CPU
+    cudaMemcpy(h_output, d_output, sizeof(h_output), cudaMemcpyDeviceToHost);
+
+    // Print the output matrix after applying the activation
+    printf("Output Matrix (After Activation):\n");
     printMatrix(h_output, C1_WIDTH, C1_HEIGHT);
 
     // Free GPU memory
@@ -82,3 +103,4 @@ int main() {
 
     return 0;
 }
+
